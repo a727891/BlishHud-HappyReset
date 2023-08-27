@@ -8,13 +8,19 @@ public class ModuleMainSettingsView: View
 {
     protected override void Build(Container buildPanel)
     {
-        buildPanel.AddControl(new StandardButton 
-        {
-            Parent = buildPanel,
-            Text = "HELLO",
-            Size = buildPanel.Size.Scale(0.20f),
-            Location = buildPanel.Size.Half() - buildPanel.Size.Scale(0.20f).Half(),
+        var panel = new FlowPanel();
+
+        panel.BeginFlow(buildPanel)
+            .AddString("Happy Reset - Settings")
+            .AddSpace()
+            .AddString("Keybind - Make sure this matches your in-game settings")
+            .AddSetting(Service.Settings.WizardsVaultKeybind)
+            .AddSpace()
+            .AddString("Options")
+            .AddSettingEnum(Service.Settings.WiggleChest)
+            .AddSettingEnum(Service.Settings.ShouldShine);
             
-        }).Click += (_, _) => { };
+
+        
     }
 }

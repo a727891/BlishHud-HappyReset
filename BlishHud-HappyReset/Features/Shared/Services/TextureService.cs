@@ -1,4 +1,5 @@
 ﻿using System;
+using Blish_HUD;
 using Blish_HUD.Modules.Managers;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,7 +13,7 @@ public class TextureService : IDisposable
        
 
         DailyChestIcon = contentsManager.GetTexture(@"Login_rewards_chest.png");
-        
+        ShineTexture = contentsManager.GetTexture(@"965696.png");
 
     }
 
@@ -20,10 +21,12 @@ public class TextureService : IDisposable
     {
 
         DailyChestIcon.Dispose();
+        ShineTexture.Dispose();
 
     }
   
     public Texture2D DailyChestIcon { get; }
+    public Texture2D ShineTexture { get; }
 
 
 }

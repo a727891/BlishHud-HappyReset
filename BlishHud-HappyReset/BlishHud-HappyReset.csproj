@@ -9,6 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Settings\Models\Bounce.enum.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Settings\Enums\BounceState.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!--contentFiles: removes the Content folder that pops up in the solution explorer -->
     <PackageReference Include="BlishHUD" Version="1.0.0" ExcludeAssets="runtime;contentFiles;analyzers" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

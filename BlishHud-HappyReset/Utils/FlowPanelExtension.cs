@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Blish_HUD.Controls;
 using Blish_HUD.Settings;
 using Blish_HUD.Settings.UI.Views;
+using HappyRest.Settings.Views;
 using Microsoft.Xna.Framework;
-
 namespace HappyReset.Utils;
 
 public static class FlowPanelExtensions
@@ -76,8 +76,15 @@ public static class FlowPanelExtensions
         }
         return panel;
     }
+    public static FlowPanel AddSettingEnum(this FlowPanel panel, SettingEntry enumSetting)
+    {
+        var viewContainer = new ViewContainer { Parent = panel };
+        viewContainer.Show(AlignedEnumSettingView.FromEnum(enumSetting, panel.Width));
+        //        viewContainer.Show(CustomEnumSettingView.FromEnum(enumSetting, panel.Width));
 
-    
+        return panel;
+    }
+
 
 
     public static FlowPanel AddSpace(this FlowPanel panel)

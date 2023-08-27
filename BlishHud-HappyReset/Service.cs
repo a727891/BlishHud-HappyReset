@@ -20,5 +20,4 @@ public static class Service
 
     public static ResetsWatcherService ResetWatcher { get; set; } = null!;
 
-    public static BouncyChest BouncyChestControl { get; set; } = null!;
 }

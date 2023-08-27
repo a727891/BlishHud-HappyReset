@@ -20,11 +20,14 @@ public class ResetsWatcherService : IDisposable
     {
         var now = DateTime.UtcNow;
 
+#if DEBUG
+        NextDailyReset = now.AddSeconds(30);
+        LastDailyReset = NextDailyReset.AddSeconds(-30);
+#else
         NextDailyReset = now.AddDays(1).Date;
         LastDailyReset = NextDailyReset.AddDays(-1);
-
-        //NextDailyReset = now.AddSeconds(45);
-        //LastDailyReset = NextDailyReset.AddSeconds(-45);
+#endif
+      
     }
 
   
