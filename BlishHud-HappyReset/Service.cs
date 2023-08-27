@@ -1,6 +1,4 @@
 ﻿using Blish_HUD.Modules.Managers;
-using HappyReset.Features.BouncyChest.Controls;
-using HappyReset.Features.Shared.Controls;
 using HappyReset.Features.Shared.Services;
 using HappyReset.Settings.Services;
 

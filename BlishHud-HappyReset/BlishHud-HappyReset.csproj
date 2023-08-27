@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Settings\Enums\BounceState.cs" />
+    <None Include="Settings\Enums\BinaryOption.cs" />
   </ItemGroup>
 
   <ItemGroup>

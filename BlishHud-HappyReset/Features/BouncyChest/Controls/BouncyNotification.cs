@@ -27,8 +27,8 @@ internal class BouncyNotification : Control
 
     private readonly Texture2D _shineTexture = Service.Textures!.ShineTexture;
 
-    private BounceState _shouldBounce = BounceState.Bouncy;
-    private BounceState _shouldShine = BounceState.Bouncy;
+    private BinaryOption _shouldBounce = BinaryOption.Yes;
+    private BinaryOption _shouldShine = BinaryOption.Yes;
 
     private AsyncTexture2D _chestTexture;
     public AsyncTexture2D ChestTexture
@@ -74,12 +74,12 @@ internal class BouncyNotification : Control
         DoWiggle();
     }
 
-    private void ShouldShine_SettingChanged(object sender, ValueChangedEventArgs<BounceState> e)
+    private void ShouldShine_SettingChanged(object sender, ValueChangedEventArgs<BinaryOption> e)
     {
         _shouldShine = e.NewValue;
     }
 
-    private void WiggleChest_SettingChanged(object sender, ValueChangedEventArgs<BounceState> e)
+    private void WiggleChest_SettingChanged(object sender, ValueChangedEventArgs<BinaryOption> e)
     {
         _shouldBounce = e.NewValue;
 
@@ -88,7 +88,7 @@ internal class BouncyNotification : Control
 
     private async void DoWiggle()
     {
-        if (_shouldBounce == BounceState.NoBounce || _isAnimating) return;
+        if (_shouldBounce == BinaryOption.No || _isAnimating) return;
         _isAnimating = true;
         _nonOpp = !_nonOpp;
         _wiggleDirection = 1;
@@ -156,7 +156,7 @@ internal class BouncyNotification : Control
             // Only show when we're in game. This is a deliberate form over function choice.
             return;
         }
-        if(_shouldShine == BounceState.Bouncy)
+        if(_shouldShine == BinaryOption.Yes)
         {
             spriteBatch.DrawOnCtrl(
                 this, 

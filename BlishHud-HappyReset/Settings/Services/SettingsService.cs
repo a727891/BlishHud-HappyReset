@@ -9,8 +9,8 @@ namespace HappyReset.Settings.Services;
 public class SettingService // singular because Setting"s"Service already exists in Blish
 {
     public SettingEntry<KeyBinding> WizardsVaultKeybind { get; }
-    public SettingEntry<BounceState> WiggleChest { get; }
-    public SettingEntry<BounceState> ShouldShine { get; }
+    public SettingEntry<BinaryOption> WiggleChest { get; }
+    public SettingEntry<BinaryOption> ShouldShine { get; }
 
     public SettingService(SettingCollection settings)
     {
@@ -23,13 +23,13 @@ public class SettingService // singular because Setting"s"Service already exists
         //WizardsVaultKeybind.Value.Enabled = true;
 
         WiggleChest = settings.DefineSetting("HR_Wiggle",
-            BounceState.Bouncy,
+            BinaryOption.Yes,
         () => "Wiggle and bounce?",
         () => "Yes - the chest wiggles like the old daily chest");
 
 
         ShouldShine = settings.DefineSetting("HR_Shine",
-            BounceState.Bouncy,
+            BinaryOption.Yes,
         () => "Shiny background?",
         () => "Yes - the chest shines like the old daily chest");
 

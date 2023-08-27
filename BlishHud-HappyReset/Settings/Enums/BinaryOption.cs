@@ -3,10 +3,10 @@ using System.ComponentModel;
 
 namespace HappyReset.Settings.Enums;
 
-public enum BounceState {
-    [Description("Yes")]
-    Bouncy,
+public enum BinaryOption {
     [Description("No")]
-    NoBounce,
+    No,
+    [Description("Yes")]
+    Yes,
 }
 
