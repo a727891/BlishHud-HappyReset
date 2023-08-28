@@ -27,7 +27,7 @@ public class Module : Blish_HUD.Modules.Module
 
     internal static readonly Logger ModuleLogger = Logger.GetLogger<Module>();
 
-    private BouncyNotification _bouncyChest;
+    private BouncyNotification? _bouncyChest;
 
     [ImportingConstructor]
     public Module([Import("ModuleParameters")] ModuleParameters moduleParameters) : base(moduleParameters)
@@ -58,26 +58,50 @@ public class Module : Blish_HUD.Modules.Module
 
         Service.ResetWatcher = new ResetsWatcherService();
 
-        _bouncyChest = new BouncyNotification(
-            Service.Textures.DailyChestIcon,
-            Service.Textures.DailyChestIcon
-        )
-        {
-            Parent = GameService.Graphics.SpriteScreen
-        };
-
-        _bouncyChest.Click += BouncyChest_Click;
-        _bouncyChest.RightMouseButtonPressed += BouncyChest_Click;
+        CreateABouncyChest();
+       
         Service.ResetWatcher.DailyReset += ResetOccurred;
 
         return Task.CompletedTask;
 
     }
 
+    private void CreateABouncyChest()
+    {
+        if(_bouncyChest != null) { 
+            return; 
+        }
+
+        _bouncyChest = new BouncyNotification(
+           Service.Textures!.DailyChestIcon,
+           Service.Textures!.DailyChestOpenedIcon
+       )
+        {
+            Parent = GameService.Graphics.SpriteScreen
+        };
+
+        _bouncyChest.Click += BouncyChest_Click;
+        _bouncyChest.RightMouseButtonPressed += BouncyChest_Click;
+
+    }
+
+    private void DestroyTheBouncyChest()
+    {
+        if(_bouncyChest == null ) {
+            return;
+        }
+
+        _bouncyChest.Click -= BouncyChest_Click;
+        _bouncyChest.RightMouseButtonPressed -= BouncyChest_Click;
+        _bouncyChest.Dispose();
+        _bouncyChest = null;
+
+    }
+
     private void BouncyChest_Click(object sender, MouseEventArgs e)
     {
         InputHelper.DoHotKey(Service.Settings.WizardsVaultKeybind.Value);
-        _bouncyChest.ChestOpen = true;
+        HandleHide();
     }
 
 
@@ -97,24 +121,16 @@ public class Module : Blish_HUD.Modules.Module
     private void ResetOccurred(object sender, DateTime reset)
     {
         Debug.WriteLine("------ HAPPY RESET -------"+reset.ToString());
-        _bouncyChest.ChestOpen = false;
-        _bouncyChest.Show();
+        //_bouncyChest.ResetChest();
+        CreateABouncyChest();
 
     }
     protected void HandleHide(bool save=true)
     {
         if(save) Service.Persistance.SaveClear(Service.CurrentAccountName);
-        _bouncyChest.ChestOpen = true;
+        DestroyTheBouncyChest();
+        //_bouncyChest.OpenChest();
     }
-
-    public void ChestClickHandler(object sender, MouseEventArgs e)
-    {
-        InputHelper.DoHotKey(new KeyBinding(ModifierKeys.Shift, Keys.H));
-        HandleHide();
-    }
-
-
-
 
     private void TEMP_FIX_SetTacOAsActive()
     {
@@ -136,14 +152,15 @@ public class Module : Blish_HUD.Modules.Module
 
         try
         {
-            _bouncyChest.Click -= BouncyChest_Click;
+            DestroyTheBouncyChest();
+           /* _bouncyChest.Click -= BouncyChest_Click;
             _bouncyChest.RightMouseButtonPressed -= BouncyChest_Click;
-            _bouncyChest.Dispose();
+            _bouncyChest.Dispose();*/
             Service.ResetWatcher.DailyReset -= ResetOccurred;
         }
         catch (Exception e)
         {
-
+            ModuleLogger.Warn("HappyReset threw exception in Unload, " + e.Message);
         }
 
         Service.ContentsManager?.Dispose();
@@ -153,6 +170,7 @@ public class Module : Blish_HUD.Modules.Module
 
     protected override void Update(GameTime gameTime)
     {
+        _bouncyChest?.Update(gameTime);
         Service.ResetWatcher?.Update(gameTime);
     }
 

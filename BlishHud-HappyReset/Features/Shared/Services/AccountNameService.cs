@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Blish_HUD;
 using Gw2Sharp.WebApi.V2.Models;
@@ -27,7 +28,8 @@ public static  class AccountNameService
             return accountInfo.Name;
         }
         catch (Exception e)
-        {   
+        {
+            Debug.WriteLine("HappyReset: Warning, account name not recieved from the API "+e.Message);
             return DEFAULT_ACCOUNT_NAME;
         }
     }

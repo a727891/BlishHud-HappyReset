@@ -58,10 +58,12 @@ internal class BouncyNotification : Control
 
     public BouncyNotification(
         AsyncTexture2D chestTexture, 
-        AsyncTexture2D openChestTexture = null)
+        AsyncTexture2D openChestTexture)
     {
         _chestTexture = chestTexture;
         _openChestTexture = openChestTexture;
+
+        _chestOpen = false;
 
         this.Size = new Point(64, 64);
         this.ClipsBounds = false;
@@ -86,6 +88,17 @@ internal class BouncyNotification : Control
         DoWiggle();
     }
 
+    public void OpenChest()
+    {
+        ChestOpen = true;
+    }
+    public void ResetChest()
+    {
+        ChestOpen = false;
+        Show();
+        DoWiggle();
+    }
+
     private async void DoWiggle()
     {
         if (_shouldBounce == BinaryOption.No || _isAnimating) return;
@@ -105,6 +118,7 @@ internal class BouncyNotification : Control
     private void RestartWiggle()
     {
         _isAnimating= false;
+        if (ChestOpen) return;
         DoWiggle();
 
     }
@@ -116,16 +130,24 @@ internal class BouncyNotification : Control
         /* COMPASS BOTTOM RIGHT *//* : GameService.Graphics.SpriteScreen.Height - 35 *//* Distance from bottom edge of map *//* - (int)(GameService.Gw2Mumble.UI.CompassSize.Height / 0.897f))
                                  - this.Height - 64 *//* Above actual bouncy chests *//* - 12 *//* Buffer from other bouncy chests *//*);
 */
-        if (!_chestOpen)
-        {
-            if (!Visible) Show();
+        if(ChestOpen) return;
 
+        var shouldBeVisible =
+         !_chestOpen &&
+         GameService.GameIntegration.Gw2Instance.Gw2IsRunning &&
+         GameService.GameIntegration.Gw2Instance.IsInGame &&
+         GameService.Gw2Mumble.IsAvailable &&
+         !GameService.Gw2Mumble.UI.IsMapOpen;
+
+       if (!Visible && shouldBeVisible)
+            Show();
+        else if (Visible && !shouldBeVisible)
+            Hide();
+
+
+        if (!_chestOpen && Visible)
+        {
             AlignWithMinimap();
-        }
-        else
-        {
-            if (Visible) Hide();
-
         }
     }
 
@@ -151,6 +173,10 @@ internal class BouncyNotification : Control
 
     protected override void Paint(SpriteBatch spriteBatch, Rectangle bounds)
     {
+        if (ChestOpen)
+        {
+            return;
+        }
         if (!GameService.GameIntegration.Gw2Instance.IsInGame)
         {
             // Only show when we're in game. This is a deliberate form over function choice.
@@ -173,8 +199,8 @@ internal class BouncyNotification : Control
             this.MouseOver || this.ChestOpen ? this.OpenChestTexture : this.ChestTexture, 
             bounds.OffsetBy(bounds.Width / 2, bounds.Height / 2), 
             null, 
-            Color.White, 
-            this.ChestOpen ? 0 : _rotation * _wiggleDirection, 
+            Color.White,
+            this.MouseOver || this.ChestOpen ? 0 : _rotation * _wiggleDirection, 
             this.ChestTexture.Texture.Bounds.Size.ToVector2() / 2
         );
     }
