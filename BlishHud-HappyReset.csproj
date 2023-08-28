@@ -25,4 +25,8 @@
     <!--building the project fails otherwise, when BlishHud assets are excluded -->
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BlishHud-HappyReset\Properties\" />
+  </ItemGroup>
+
 </Project>
