@@ -9,24 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Settings\Models\Bounce.enum.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Settings\Enums\BinaryOption.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <!--contentFiles: removes the Content folder that pops up in the solution explorer -->
     <PackageReference Include="BlishHUD" Version="1.0.0" ExcludeAssets="runtime;contentFiles;analyzers" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SemanticVersioning" Version="1.2.2" />
     <PackageReference Include="System.ComponentModel.Composition" Version="7.0.0" />
     <!--building the project fails otherwise, when BlishHud assets are excluded -->
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="BlishHud-HappyReset\Properties\" />
   </ItemGroup>
 
 </Project>

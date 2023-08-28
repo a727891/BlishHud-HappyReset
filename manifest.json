@@ -1,10 +1,10 @@
 {
   "name": "Happy Reset",
-  "version": "1.0.0-rc-4",
+  "version": "1.0.0-rc-5",
   "namespace": "Soeed.HappyReset",
   "package": "BlishHud-HappyReset.dll",
   "manifest_version": 1,
-  "description": "Brings back the daily login chest to open the Wizard's Vault.",
+  "description": "Bring back the daily login chest to open the Wizard's Vault.",
   "dependencies": {
     "bh.blishhud": ">=1.0.0"
   },
@@ -14,6 +14,11 @@
       "name": "Soeed",
       "username": "soeed.4160",
       "url": "https://github.com/a727891"
+    },
+    {
+      "name": "Freesnow",
+      "username": "freesnow.7251",
+      "url": "https://github.com/dlamkins"
     }
   ],
   "directories": [

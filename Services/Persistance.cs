@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Security.Policy;
 
-namespace HappyReset.Features.Shared.Services;
+namespace HappyReset.Services;
 
 
 [Serializable]
@@ -15,10 +13,10 @@ public class Persistance
     public static string FILENAME = "resets.json";
 
     [JsonProperty("version")]
-    public string Version { get; set; } = "0.0.1";
+    public string Version { get; set; } = "1.0.0";
 
     [JsonProperty("lastKnownReset")]
-    public Dictionary<string,  DateTime> LastKnownReset { get; set; } = new();
+    public Dictionary<string, DateTime> LastKnownReset { get; set; } = new();
 
     public DateTime GetEmpty() => new();
 
@@ -44,18 +42,12 @@ public class Persistance
 
     public void Save()
     {
-        //PluginLog.Verbose($"{DateTime.Now} - {CharacterData.Name} Saved");
-
         var configFileInfo = GetConfigFileInfo();
-
         var serializedContents = JsonConvert.SerializeObject(this, Formatting.Indented);
 
         using var writer = new StreamWriter(configFileInfo.FullName);
         writer.Write(serializedContents);
         writer.Close();
-
-        //PluginLog.Warning("Tried to save a config with invalid LocalContentID, aborting save.");
-
     }
 
     private static FileInfo GetConfigFileInfo()

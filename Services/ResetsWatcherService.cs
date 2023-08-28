@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace HappyReset.Features.Shared.Services;
+namespace HappyReset.Services;
 
 public class ResetsWatcherService : IDisposable
 {
@@ -21,35 +21,13 @@ public class ResetsWatcherService : IDisposable
         var now = DateTime.UtcNow;
 
 #if DEBUG
-        NextDailyReset = now.AddSeconds(30);
+        NextDailyReset = now.AddSeconds(20);
         LastDailyReset = NextDailyReset.AddSeconds(-30);
 #else
         NextDailyReset = now.AddDays(1).Date;
         LastDailyReset = NextDailyReset.AddDays(-1);
 #endif
-      
-    }
 
-  
-    public static DateTime NextDayOfWeek(DayOfWeek weekday, int hour, int minute)
-    {
-        var today = DateTime.UtcNow;
-
-        if (today.Hour < hour && today.DayOfWeek == weekday)
-        {
-            return today.Date.AddHours(hour).AddMinutes(minute);
-        }
-        else
-        {
-            var nextReset = today.AddDays(1);
-
-            while (nextReset.DayOfWeek != weekday)
-            {
-                nextReset = nextReset.AddDays(1);
-            }
-
-            return nextReset.Date.AddHours(hour).AddMinutes(minute);
-        }
     }
 
     public void Update(GameTime gametime)

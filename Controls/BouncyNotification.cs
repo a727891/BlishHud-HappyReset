@@ -3,16 +3,12 @@ using Blish_HUD;
 using Glide;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Blish_HUD.Controls;
 using Microsoft.Xna.Framework.Graphics;
 using HappyReset.Utils;
-using HappyReset.Settings.Enums;
 
-namespace HappyReset.Features.BouncyChest.Controls;
+namespace HappyReset.Controls;
 
 internal class BouncyNotification : Control
 {
@@ -27,8 +23,8 @@ internal class BouncyNotification : Control
 
     private readonly Texture2D _shineTexture = Service.Textures!.ShineTexture;
 
-    private BinaryOption _shouldBounce = BinaryOption.Yes;
-    private BinaryOption _shouldShine = BinaryOption.Yes;
+    private bool _shouldBounce = true;
+    private bool _shouldShine = true;
 
     private AsyncTexture2D _chestTexture;
     public AsyncTexture2D ChestTexture
@@ -57,7 +53,7 @@ internal class BouncyNotification : Control
     private float _rotation = 0f;
 
     public BouncyNotification(
-        AsyncTexture2D chestTexture, 
+        AsyncTexture2D chestTexture,
         AsyncTexture2D openChestTexture)
     {
         _chestTexture = chestTexture;
@@ -65,8 +61,8 @@ internal class BouncyNotification : Control
 
         _chestOpen = false;
 
-        this.Size = new Point(64, 64);
-        this.ClipsBounds = false;
+        Size = new Point(64, 64);
+        ClipsBounds = false;
 
         _shouldBounce = Service.Settings.WiggleChest.Value;
         _shouldShine = Service.Settings.ShouldShine.Value;
@@ -76,32 +72,21 @@ internal class BouncyNotification : Control
         DoWiggle();
     }
 
-    private void ShouldShine_SettingChanged(object sender, ValueChangedEventArgs<BinaryOption> e)
+    private void ShouldShine_SettingChanged(object sender, ValueChangedEventArgs<bool> e)
     {
         _shouldShine = e.NewValue;
     }
 
-    private void WiggleChest_SettingChanged(object sender, ValueChangedEventArgs<BinaryOption> e)
+    private void WiggleChest_SettingChanged(object sender, ValueChangedEventArgs<bool> e)
     {
         _shouldBounce = e.NewValue;
 
         DoWiggle();
     }
 
-    public void OpenChest()
-    {
-        ChestOpen = true;
-    }
-    public void ResetChest()
-    {
-        ChestOpen = false;
-        Show();
-        DoWiggle();
-    }
-
     private async void DoWiggle()
     {
-        if (_shouldBounce == BinaryOption.No || _isAnimating) return;
+        if (!_shouldBounce || _isAnimating) return;
         _isAnimating = true;
         _nonOpp = !_nonOpp;
         _wiggleDirection = 1;
@@ -117,7 +102,7 @@ internal class BouncyNotification : Control
     }
     private void RestartWiggle()
     {
-        _isAnimating= false;
+        _isAnimating = false;
         if (ChestOpen) return;
         DoWiggle();
 
@@ -125,12 +110,7 @@ internal class BouncyNotification : Control
 
     public override void DoUpdate(GameTime gameTime)
     {
-        /*this.Location = new Point(GameService.Graphics.SpriteScreen.Width - this.Width - 24 *//* Distance from right edge *//*, (GameService.Gw2Mumble.UI.IsCompassTopRight
-                                                                                                 *//* COMPASS TOP    RIGHT *//* ? GameService.Graphics.SpriteScreen.Height - 24 *//* Distance from bottom edge */
-        /* COMPASS BOTTOM RIGHT *//* : GameService.Graphics.SpriteScreen.Height - 35 *//* Distance from bottom edge of map *//* - (int)(GameService.Gw2Mumble.UI.CompassSize.Height / 0.897f))
-                                 - this.Height - 64 *//* Above actual bouncy chests *//* - 12 *//* Buffer from other bouncy chests *//*);
-*/
-        if(ChestOpen) return;
+        if (ChestOpen) return;
 
         var shouldBeVisible =
          !_chestOpen &&
@@ -139,7 +119,7 @@ internal class BouncyNotification : Control
          GameService.Gw2Mumble.IsAvailable &&
          !GameService.Gw2Mumble.UI.IsMapOpen;
 
-       if (!Visible && shouldBeVisible)
+        if (!Visible && shouldBeVisible)
             Show();
         else if (Visible && !shouldBeVisible)
             Hide();
@@ -154,7 +134,7 @@ internal class BouncyNotification : Control
 
     protected void AlignWithMinimap()
     {
-        var IsCompassTopRight = Gw2MumbleService.Gw2Mumble.UI.IsCompassTopRight;
+        var IsCompassTopRight = GameService.Gw2Mumble.UI.IsCompassTopRight;
         var spriteScreenSize = GameService.Graphics.SpriteScreen.Size;
 
         var compassMapBounds = CompassData.ScreenBounds;
@@ -162,11 +142,11 @@ internal class BouncyNotification : Control
 
         if (!IsCompassTopRight)
         {//Bottom right map - place chest above map
-            Location = new Point(compassMapBounds.X, compassMapBounds.Y) - new Point(0, this.Size.Y);
+            Location = new Point(compassMapBounds.X, compassMapBounds.Y) - new Point(0, Size.Y);
         }
         else
         {//top right map - place chest on bottom of spriteScreenSize
-            Location = spriteScreenSize - this.Size - new Point(20,20);
+            Location = spriteScreenSize - Size - new Point(20, 20);
         }
     }
 
@@ -182,26 +162,26 @@ internal class BouncyNotification : Control
             // Only show when we're in game. This is a deliberate form over function choice.
             return;
         }
-        if(_shouldShine == BinaryOption.Yes)
+        if (_shouldShine)
         {
             spriteBatch.DrawOnCtrl(
-                this, 
-                _shineTexture, 
-                bounds.ScaleBy(1.5f).OffsetBy(bounds.Width / 2, bounds.Height / 2), 
-                null, 
-                Color.White * 0.8f, 
-                (float)GameService.Overlay.CurrentGameTime.TotalGameTime.TotalSeconds * -1.3f, 
+                this,
+                _shineTexture,
+                bounds.ScaleBy(1.5f).OffsetBy(bounds.Width / 2, bounds.Height / 2),
+                null,
+                Color.White * 0.8f,
+                (float)GameService.Overlay.CurrentGameTime.TotalGameTime.TotalSeconds * -1.3f,
                 _shineTexture.Bounds.Size.ToVector2() / 2
             );
         }
         spriteBatch.DrawOnCtrl(
-            this, 
-            this.MouseOver || this.ChestOpen ? this.OpenChestTexture : this.ChestTexture, 
-            bounds.OffsetBy(bounds.Width / 2, bounds.Height / 2), 
-            null, 
+            this,
+            MouseOver || ChestOpen ? OpenChestTexture : ChestTexture,
+            bounds.OffsetBy(bounds.Width / 2, bounds.Height / 2),
+            null,
             Color.White,
-            this.MouseOver || this.ChestOpen ? 0 : _rotation * _wiggleDirection, 
-            this.ChestTexture.Texture.Bounds.Size.ToVector2() / 2
+            MouseOver || ChestOpen ? 0 : _rotation * _wiggleDirection,
+            ChestTexture.Texture.Bounds.Size.ToVector2() / 2
         );
     }
 

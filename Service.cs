@@ -1,6 +1,6 @@
 ﻿using Blish_HUD.Modules.Managers;
-using HappyReset.Features.Shared.Services;
-using HappyReset.Settings.Services;
+using HappyReset.Services;
+using HappyReset.Settings;
 
 namespace HappyReset;
 
