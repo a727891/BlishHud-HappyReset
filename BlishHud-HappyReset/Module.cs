@@ -58,7 +58,7 @@ public class Module : Blish_HUD.Modules.Module
 
         Service.ResetWatcher = new ResetsWatcherService();
 
-        CreateABouncyChest();
+        //CreateABouncyChest();
        
         Service.ResetWatcher.DailyReset += ResetOccurred;
 
