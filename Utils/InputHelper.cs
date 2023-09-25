@@ -19,9 +19,12 @@ public static class InputHelper
             if (key.ModifierKeys.HasFlag(ModifierKeys.Shift))
                 Blish_HUD.Controls.Intern.Keyboard.Press(VirtualKeyShort.SHIFT, true);
         }
-        Blish_HUD.Controls.Intern.Keyboard.Press(ToVirtualKey(key.PrimaryKey), true);
-        System.Threading.Thread.Sleep(50);
-        Blish_HUD.Controls.Intern.Keyboard.Release(ToVirtualKey(key.PrimaryKey), true);
+        if (key.PrimaryKey != Keys.None)
+        {
+            Blish_HUD.Controls.Intern.Keyboard.Press(ToVirtualKey(key.PrimaryKey), true);
+            System.Threading.Thread.Sleep(50);
+            Blish_HUD.Controls.Intern.Keyboard.Release(ToVirtualKey(key.PrimaryKey), true);
+        }
         if (key.ModifierKeys != ModifierKeys.None)
         {
             if (key.ModifierKeys.HasFlag(ModifierKeys.Shift))
