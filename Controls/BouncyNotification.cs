@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Blish_HUD.Controls;
 using Microsoft.Xna.Framework.Graphics;
 using HappyReset.Utils;
+using HappyReset.Enum;
 
 namespace HappyReset.Controls;
 
@@ -25,6 +26,7 @@ internal class BouncyNotification : Control
 
     private bool _shouldBounce = true;
     private bool _shouldShine = true;
+    private ChestPosition _chestLocation = ChestPosition.MINIMAP_TOP_LEFT;
 
     private AsyncTexture2D _chestTexture;
     public AsyncTexture2D ChestTexture
@@ -64,12 +66,19 @@ internal class BouncyNotification : Control
         Size = new Point(64, 64);
         ClipsBounds = false;
 
+        _chestLocation = Service.Settings.ChestLocation.Value;
         _shouldBounce = Service.Settings.WiggleChest.Value;
         _shouldShine = Service.Settings.ShouldShine.Value;
+        Service.Settings.ChestLocation.SettingChanged += ChestLocation_SettingChanged;
         Service.Settings.WiggleChest.SettingChanged += WiggleChest_SettingChanged;
         Service.Settings.ShouldShine.SettingChanged += ShouldShine_SettingChanged;
 
         DoWiggle();
+    }
+
+    private void ChestLocation_SettingChanged(object sender, ValueChangedEventArgs<Enum.ChestPosition> e)
+    {
+        _chestLocation = e.NewValue;
     }
 
     private void ShouldShine_SettingChanged(object sender, ValueChangedEventArgs<bool> e)
@@ -139,15 +148,43 @@ internal class BouncyNotification : Control
 
         var compassMapBounds = CompassData.ScreenBounds;
 
+        switch (_chestLocation)
+        {
+            case ChestPosition.MINIMAP_TOP_LEFT:
+                //Bottom right map - place chest above map
+                Location = new Point(compassMapBounds.X, compassMapBounds.Y) - new Point(0, Size.Y);
+                break;
+            case ChestPosition.MINIMAP_TOP_RIGHT:
 
-        if (!IsCompassTopRight)
-        {//Bottom right map - place chest above map
-            Location = new Point(compassMapBounds.X, compassMapBounds.Y) - new Point(0, Size.Y);
+                Location = new Point(compassMapBounds.X+compassMapBounds.Width - 20, compassMapBounds.Y ) - Size;
+                break;
+            case ChestPosition.SCREEN_BOTTOM_RIGHT:
+                //top right map - place chest on bottom of spriteScreenSize
+                Location = spriteScreenSize - Size - new Point(20, 20);
+                break;
+            case ChestPosition.MINIMAP_INSIDE_TOP_LEFT:
+                Location = new Point(compassMapBounds.X , compassMapBounds.Y);
+                break;
+            case ChestPosition.MINIMAP_INSIDE_TOP_RIGHT:
+                Location = new Point(compassMapBounds.X+compassMapBounds.Width, compassMapBounds.Y) - new Point(Size.X, 0);
+                break;
+            case ChestPosition.MINIMAP_INSIDE_BOTTOM_LEFT:
+                Location = new Point(compassMapBounds.X, compassMapBounds.Y + compassMapBounds.Height) - new Point(0, Size.Y);
+                break;
+            case ChestPosition.MINIMAP_INSIDE_BOTTOM_RIGHT:
+                Location = new Point(compassMapBounds.X + compassMapBounds.Width, compassMapBounds.Y + compassMapBounds.Height) - Size;
+                break;
         }
-        else
-        {//top right map - place chest on bottom of spriteScreenSize
-            Location = spriteScreenSize - Size - new Point(20, 20);
-        }
+
+        /* if (!IsCompassTopRight)
+         {//Bottom right map - place chest above map
+             Location = new Point(compassMapBounds.X, compassMapBounds.Y) - new Point(0, Size.Y);
+         }
+         else
+         {
+         //top right map - place chest on bottom of spriteScreenSize
+                 Location = spriteScreenSize - Size - new Point(20, 20);
+         }*/
     }
 
 

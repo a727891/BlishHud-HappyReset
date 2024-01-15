@@ -16,6 +16,7 @@ public class ModuleMainSettingsView : View
             .AddSetting(Service.Settings.WizardsVaultKeybind)
             .AddSpace()
             .AddString("Display Options")
+            .AddSetting(Service.Settings.ChestLocation)
             .AddSetting(Service.Settings.WiggleChest)
             .AddSetting(Service.Settings.ShouldShine);
 

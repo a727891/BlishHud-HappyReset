@@ -1,5 +1,6 @@
 ﻿using Blish_HUD.Input;
 using Blish_HUD.Settings;
+using HappyReset.Enum;
 using Microsoft.Xna.Framework.Input;
 
 
@@ -11,6 +12,8 @@ public class SettingService // singular because Setting"s"Service already exists
     public SettingEntry<bool> WiggleChest { get; }
     public SettingEntry<bool> ShouldShine { get; }
 
+    public SettingEntry<ChestPosition> ChestLocation { get; }
+
     public SettingService(SettingCollection settings)
     {
         WizardsVaultKeybind = settings.DefineSetting("HR_WizVault_Keybind",
@@ -18,6 +21,12 @@ public class SettingService // singular because Setting"s"Service already exists
         () => "Wizard's Vault Keybind",
         () => "This must match your in-game Wizard's Vault keybind (F11 -> Keybinds)");
         //WizardsVaultKeybind.Value.Enabled = true;
+
+        ChestLocation = settings.DefineSetting("HR_ChestLocation",
+            ChestPosition.MINIMAP_TOP_LEFT,
+        () => "Location",
+        () => "Where the bouncy chest will appear on the screen");
+
 
         WiggleChest = settings.DefineSetting("HR_Wiggle",
             true,
